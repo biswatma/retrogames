@@ -1215,19 +1215,6 @@ class GameEngine {
       muteBtn.innerText = isMuted ? '🔇' : '🔊';
       muteBtn.title = isMuted ? 'Unmute Sound' : 'Mute Sound';
       if (!isMuted) Sound.playClick();
-    });
-
-    // 6. Audio Toast banner
-    const soundToast = document.getElementById('soundToast');
-    soundToast.addEventListener('click', () => {
-      Sound.init();
-      Sound.playClick();
-      soundToast.classList.add('hidden');
-    });
-
-    setTimeout(() => {
-      soundToast.classList.add('hidden');
-    }, 8000);
   }
 
   triggerVisualPress(buttonId) {
