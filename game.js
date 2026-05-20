@@ -1264,7 +1264,9 @@ function setupPWA() {
   const closeIosBtn = document.getElementById('iosInstallCloseBtn');
 
   // Detect iOS and Standalone status
-  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isIOS = (/iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && 
+                !window.MSStream;
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
 
   // Listen for the native beforeinstallprompt (Android / Chrome Desktop)
