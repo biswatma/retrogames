@@ -1160,6 +1160,11 @@ class GameEngine {
     if (power) {
       const handlePower = (e) => {
         e.preventDefault();
+        if ('vibrate' in navigator) {
+          try {
+            navigator.vibrate(15); // Slightly longer haptic (15ms) for phone power key
+          } catch (err) {}
+        }
         this.powerToggle();
       };
       power.addEventListener('touchstart', handlePower, { passive: false });
@@ -1172,6 +1177,11 @@ class GameEngine {
     
     skinBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        if ('vibrate' in navigator) {
+          try {
+            navigator.vibrate(10); // Subtle haptic click (10ms)
+          } catch (err) {}
+        }
         Sound.playClick();
         skinBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -1188,6 +1198,11 @@ class GameEngine {
     
     backlightBtns.forEach(btn => {
       btn.addEventListener('click', () => {
+        if ('vibrate' in navigator) {
+          try {
+            navigator.vibrate(10); // Subtle haptic click (10ms)
+          } catch (err) {}
+        }
         Sound.playClick();
         backlightBtns.forEach(b => b.classList.remove('active'));
         btn.classList.add('active');
@@ -1211,16 +1226,27 @@ class GameEngine {
     });
 
     muteBtn.addEventListener('click', () => {
+      if ('vibrate' in navigator) {
+        try {
+          navigator.vibrate(10); // Subtle haptic click (10ms)
+        } catch (err) {}
+      }
       const isMuted = Sound.toggleMute();
       muteBtn.innerText = isMuted ? '🔇' : '🔊';
       muteBtn.title = isMuted ? 'Unmute Sound' : 'Mute Sound';
       if (!isMuted) Sound.playClick();
+    });
   }
 
   triggerVisualPress(buttonId) {
     const btn = document.getElementById(buttonId);
     if (btn) {
       btn.classList.add('pressed');
+      if ('vibrate' in navigator) {
+        try {
+          navigator.vibrate(12); // Subtle haptic click (12ms) for keypad
+        } catch (err) {}
+      }
       setTimeout(() => {
         btn.classList.remove('pressed');
       }, 100);
