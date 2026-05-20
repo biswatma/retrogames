@@ -1,0 +1,1010 @@
+/* ==========================================================================
+   Nokia 3310 Retro Snake Game Style Sheet
+   Includes: Sleek dark dashboard, CSS 3D Phone, LCD simulation, Tactile buttons
+   ========================================================================== */
+
+/* Design Tokens & Theme Variables */
+:root {
+  --font-display: 'Outfit', sans-serif;
+  --font-lcd: 'VT323', monospace;
+  
+  --bg-gradient: radial-gradient(circle at 50% 30%, #1e2530 0%, #0d1017 100%);
+  --panel-bg: rgba(20, 26, 38, 0.65);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --glass-glow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --text-primary: #f3f4f6;
+  --text-muted: #9ca3af;
+  --accent-color: #3b82f6;
+
+  /* Nokia Shell Base Variables */
+  --shell-color: #24344f;
+  --shell-accent: #d1d5db;
+  --shell-highlight: rgba(255, 255, 255, 0.15);
+  --key-bg: #e5e7eb;
+  --key-text: #1f2937;
+  --key-glow: 0 4px 0px #9ca3af, inset 0 2px 2px rgba(255, 255, 255, 0.6);
+  --key-active-glow: 0 1px 0px #9ca3af, inset 0 1px 1px rgba(0, 0, 0, 0.2);
+
+  /* LCD Classic Backlight Palette (Default) */
+  --lcd-bg: #b8c69f;
+  --lcd-pixel: #2b3b26;
+  --lcd-light: rgba(184, 198, 159, 0.7);
+  --lcd-shadow: rgba(43, 59, 38, 0.15);
+}
+
+/* --------------------------------------------------------------------------
+   Global Layout & Reset
+   -------------------------------------------------------------------------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-display);
+  background: var(--bg-gradient);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow-x: hidden;
+  padding: 2rem 1rem;
+}
+
+/* Sound toast banner */
+.sound-toast {
+  position: fixed;
+  top: 1rem;
+  z-index: 1000;
+  background: rgba(59, 130, 246, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 0.75rem 1.5rem;
+  border-radius: 9999px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3), 0 0 15px rgba(59, 130, 246, 0.4);
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  animation: floatToast 3s infinite ease-in-out;
+  cursor: pointer;
+  pointer-events: auto;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.sound-toast.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
+}
+
+@keyframes floatToast {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+.app-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.app-header {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+
+.logo-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.retro-badge {
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  background: var(--accent-color);
+  color: #fff;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  text-transform: uppercase;
+}
+
+.app-header h1 {
+  font-size: 2.75rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: -0.02em;
+}
+
+.tagline {
+  color: var(--text-muted);
+  font-size: 1.05rem;
+  margin-top: 0.5rem;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Three-column Dashboard Layout */
+.main-layout {
+  display: grid;
+  grid-template-columns: 300px 1fr 300px;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (max-width: 1024px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Interactive Glass Panels (Left & Right dashboards)
+   -------------------------------------------------------------------------- */
+.side-panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 24px;
+  padding: 1.75rem;
+  box-shadow: var(--glass-glow);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.panel-section h2 {
+  font-size: 1.15rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 0.5rem;
+}
+
+.panel-section h2 .icon {
+  font-size: 1.25rem;
+}
+
+.section-desc {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+/* Skin Shell Customizer */
+.skin-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.skin-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 0.6rem 1rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-align: left;
+  transition: all 0.2s ease;
+}
+
+.skin-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateX(3px);
+}
+
+.skin-btn.active {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+}
+
+.color-preview {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  display: inline-block;
+}
+.color-preview.navy { background: #1c2a3f; }
+.color-preview.grey { background: #8e959e; }
+.color-preview.crimson { background: #9b1c1c; }
+.color-preview.yellow { background: #d9b814; }
+.color-preview.teal { background: #0f766e; }
+
+/* LCD Backlight selector */
+.backlight-selector {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+}
+
+.backlight-btn {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--text-primary);
+  border-radius: 8px;
+  padding: 0.5rem;
+  font-family: inherit;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.backlight-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.backlight-btn.active {
+  background: var(--accent-color);
+  color: white;
+  border-color: var(--accent-color);
+}
+
+/* Volume Slider styling */
+.volume-control {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.6rem 0.8rem;
+  border-radius: 12px;
+}
+
+.icon-btn {
+  background: none;
+  border: none;
+  font-size: 1.15rem;
+  cursor: pointer;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+  border-radius: 6px;
+  transition: background 0.2s;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.slider {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.15);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+#volumeVal {
+  font-size: 0.8rem;
+  font-weight: 600;
+  min-width: 32px;
+  text-align: right;
+  color: var(--text-muted);
+}
+
+/* Keypad Manual Instructions */
+.help-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.help-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 0.4rem 0.6rem;
+  border-radius: 8px;
+  font-size: 0.8rem;
+}
+
+.control-key {
+  font-family: monospace;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+}
+
+.control-desc {
+  color: var(--text-muted);
+}
+
+.bullet-list {
+  padding-left: 1.15rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.bullet-list li {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Stats Scoreboard Panel */
+.scoreboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  border-left: 3px solid var(--accent-color);
+  font-size: 0.85rem;
+}
+
+.score-row span {
+  color: var(--text-muted);
+}
+
+.score-row strong {
+  color: #fff;
+  font-size: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Nokia 3310 Phone Shell Viewport (Center)
+   -------------------------------------------------------------------------- */
+.phone-viewport {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem 0;
+  perspective: 1000px; /* Gives slight 3D angle depth feel */
+}
+
+/* Iconic Nokia 3310 Physical Body */
+.nokia-3310 {
+  position: relative;
+  width: 320px;
+  height: 580px;
+  border-radius: 45px 45px 60px 60px;
+  background: var(--shell-color);
+  padding: 20px 22px 25px 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  /* Bevel highlight, inner shadow & outer realistic shadow */
+  box-shadow: 
+    0 15px 45px rgba(0, 0, 0, 0.6),
+    0 5px 15px rgba(0, 0, 0, 0.4),
+    inset 0 4px 6px rgba(255, 255, 255, 0.25),
+    inset 0 -10px 20px rgba(0, 0, 0, 0.45);
+  
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+/* Skin definitions */
+.nokia-3310.navy {
+  --shell-color: #1a2a3a;
+  --shell-accent: #cbcfd6;
+  --key-bg: #dbdee3;
+  --key-text: #2c353f;
+  --key-glow: 0 4px 0px #adb2b9, inset 0 2px 2px rgba(255,255,255,0.7);
+  --key-active-glow: 0 1px 0px #adb2b9, inset 0 1px 1px rgba(0,0,0,0.15);
+}
+
+.nokia-3310.grey {
+  --shell-color: #7d848d;
+  --shell-accent: #212c3b;
+  --key-bg: #eaeaeb;
+  --key-text: #1a232f;
+  --key-glow: 0 4px 0px #9d9fa3, inset 0 2px 2px rgba(255,255,255,0.8);
+  --key-active-glow: 0 1px 0px #9d9fa3, inset 0 1px 1px rgba(0,0,0,0.15);
+}
+
+.nokia-3310.crimson {
+  --shell-color: #8c1616;
+  --shell-accent: #e5e7eb;
+  --key-bg: #f3f4f6;
+  --key-text: #374151;
+  --key-glow: 0 4px 0px #b1b5bd, inset 0 2px 2px rgba(255,255,255,0.7);
+  --key-active-glow: 0 1px 0px #b1b5bd, inset 0 1px 1px rgba(0,0,0,0.15);
+}
+
+.nokia-3310.yellow {
+  --shell-color: #c9ab10;
+  --shell-accent: #111827;
+  --key-bg: #2d3135;
+  --key-text: #f3f4f6;
+  --key-glow: 0 4px 0px #111417, inset 0 2px 2px rgba(255,255,255,0.15);
+  --key-active-glow: 0 1px 0px #111417, inset 0 1px 1px rgba(0,0,0,0.4);
+}
+
+.nokia-3310.teal {
+  --shell-color: #0b6860;
+  --shell-accent: #b45309; /* Bronze accent */
+  --key-bg: #e2e8f0;
+  --key-text: #0f172a;
+  --key-glow: 0 4px 0px #94a3b8, inset 0 2px 2px rgba(255,255,255,0.8);
+  --key-active-glow: 0 1px 0px #94a3b8, inset 0 1px 1px rgba(0,0,0,0.15);
+}
+
+/* Phone Top (Ear Speaker, Power button) */
+.phone-top {
+  width: 100%;
+  height: 25px;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 12px;
+}
+
+.power-button {
+  position: absolute;
+  top: -24px;
+  width: 38px;
+  height: 9px;
+  background: #c2410c;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 2px;
+  border-bottom-right-radius: 2px;
+  box-shadow: 
+    inset 0 1px 1px rgba(255,255,255,0.3),
+    0 1px 2px rgba(0,0,0,0.5);
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.power-button:active {
+  transform: translateY(2px);
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.speaker-grill {
+  display: flex;
+  gap: 3px;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 4px 10px;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.8), 0 1px 0 rgba(255,255,255,0.1);
+}
+
+.grill-hole {
+  width: 4px;
+  height: 4px;
+  background: #111;
+  border-radius: 50%;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.9);
+}
+
+/* Screen Plate (Iconic silver bezel wrapping the LCD) */
+.screen-plate {
+  width: 100%;
+  height: 205px;
+  background: var(--shell-accent);
+  border-radius: 25px 25px 35px 35px;
+  border: 3px solid rgba(0, 0, 0, 0.8);
+  box-shadow: 
+    inset 0 3px 5px rgba(255,255,255,0.6),
+    inset 0 -3px 5px rgba(0,0,0,0.3),
+    0 3px 5px rgba(0,0,0,0.4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 16px 12px 16px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Brand Name top of plate */
+.nokia-brand {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 0.8rem;
+  font-weight: bold;
+  letter-spacing: 0.25em;
+  color: rgba(0, 0, 0, 0.75);
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+  margin-bottom: 6px;
+  text-align: center;
+  width: 100%;
+}
+
+/* Keypad top bevel curves into silver plate */
+.plate-bottom-arc {
+  position: absolute;
+  bottom: -15px;
+  width: 110%;
+  height: 25px;
+  background: var(--shell-color);
+  border-radius: 50%;
+  border-top: 3px solid rgba(0,0,0,0.8);
+  z-index: 2;
+  box-shadow: inset 0 3px 4px rgba(0,0,0,0.3);
+}
+
+/* --------------------------------------------------------------------------
+   Retro LCD Screen Simulation
+   -------------------------------------------------------------------------- */
+.screen-glass {
+  width: 100%;
+  flex: 1;
+  background: #333;
+  border-radius: 12px;
+  border: 4px solid rgba(0, 0, 0, 0.95);
+  box-shadow: 
+    inset 0 10px 10px rgba(0,0,0,0.8),
+    0 1px 2px rgba(255,255,255,0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  padding: 3px;
+  z-index: 1;
+}
+
+/* Overlay representing liquid crystal pixel shadows and horizontal scanlines */
+.lcd-grid-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    repeating-linear-gradient(rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 2px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0.06) 0px, rgba(0,0,0,0.06) 1px, transparent 1px, transparent 2px);
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* The actual vintage backlit LCD Panel */
+.lcd-screen {
+  flex: 1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-lcd);
+  background: var(--lcd-bg);
+  color: var(--lcd-pixel);
+  padding: 4px 6px;
+  user-select: none;
+  position: relative;
+  transition: background 0.3s, color 0.3s;
+  
+  /* LCD Screen glow & backlight shadow */
+  box-shadow: 
+    inset 0 0 15px var(--lcd-shadow),
+    0 0 10px var(--lcd-light);
+}
+
+/* Screen backlight themes */
+.lcd-screen.classic {
+  --lcd-bg: #b8c69f;
+  --lcd-pixel: #2b3b26;
+  --lcd-light: rgba(184, 198, 159, 0.4);
+  --lcd-shadow: rgba(43, 59, 38, 0.2);
+}
+
+.lcd-screen.amber {
+  --lcd-bg: #e2a035;
+  --lcd-pixel: #3a1e00;
+  --lcd-light: rgba(226, 160, 53, 0.5);
+  --lcd-shadow: rgba(58, 30, 0, 0.3);
+}
+
+.lcd-screen.blue {
+  --lcd-bg: #8cd8ff;
+  --lcd-pixel: #00223b;
+  --lcd-light: rgba(140, 216, 255, 0.5);
+  --lcd-shadow: rgba(0, 34, 59, 0.3);
+}
+
+/* LCD Header (Signal, Title, Battery) */
+.lcd-header {
+  height: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.15rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--lcd-pixel);
+  padding-bottom: 3px;
+  margin-bottom: 4px;
+}
+
+.signal-indicator, .battery-indicator {
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+.header-title {
+  font-size: 1rem;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 50%;
+  text-align: center;
+}
+
+/* Canvas container */
+.lcd-content {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+
+#gameCanvas {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  display: block;
+}
+
+/* LCD Footer Actions */
+.lcd-footer {
+  height: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: bold;
+  border-top: 2px solid var(--lcd-pixel);
+  padding-top: 2px;
+  margin-top: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Tactile Keypad Design
+   -------------------------------------------------------------------------- */
+.keypad {
+  width: 100%;
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  z-index: 3;
+}
+
+/* Utility keys (soft keys and scroll button) */
+.key-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.nav-row {
+  height: 60px;
+  padding: 0 4px;
+}
+
+/* 3D Key Base Styling */
+.key {
+  border: 1px solid rgba(0, 0, 0, 0.45);
+  background: var(--key-bg);
+  color: var(--key-text);
+  font-family: var(--font-display);
+  cursor: pointer;
+  transition: transform 0.08s, box-shadow 0.08s;
+  user-select: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Key Active press mechanics */
+.key:active, .key.pressed {
+  transform: translateY(3px);
+  box-shadow: var(--key-active-glow) !important;
+}
+
+/* Options / soft buttons (curved arcs) */
+.soft-key {
+  width: 62px;
+  height: 32px;
+  border-radius: 12px;
+  box-shadow: var(--key-glow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.left-soft {
+  border-top-right-radius: 4px;
+  border-bottom-left-radius: 16px;
+  transform: rotate(6deg);
+}
+.left-soft:active, .left-soft.pressed {
+  transform: rotate(6deg) translateY(3px);
+}
+
+.right-soft {
+  border-top-left-radius: 4px;
+  border-bottom-right-radius: 16px;
+  transform: rotate(-6deg);
+}
+.right-soft:active, .right-soft.pressed {
+  transform: rotate(-6deg) translateY(3px);
+}
+
+.bar-icon {
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.c-label {
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+/* Large Central Silver Scroll key */
+.scroll-key-wrapper {
+  position: relative;
+  width: 90px;
+  height: 62px;
+  background: radial-gradient(circle, #e2e8f0 0%, #cbd5e1 100%);
+  border-radius: 20px 20px 24px 24px;
+  border: 2px solid rgba(0, 0, 0, 0.7);
+  box-shadow: 
+    0 4px 6px rgba(0,0,0,0.3),
+    inset 0 2px 3px white,
+    inset 0 -2px 3px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.scroll-key-btn {
+  border: none;
+  background: none;
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.1s;
+}
+
+.scroll-up {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+  padding-top: 4px;
+}
+.scroll-up:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.scroll-up:active, .scroll-up.pressed {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.scroll-down {
+  padding-bottom: 4px;
+}
+.scroll-down:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.scroll-down:active, .scroll-down.pressed {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.scroll-arrow {
+  color: #475569;
+  font-size: 0.9rem;
+  transition: transform 0.1s;
+}
+
+.scroll-key-btn:active .scroll-arrow,
+.scroll-key-btn.pressed .scroll-arrow {
+  transform: scale(0.95);
+}
+
+.scroll-key-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 32px;
+  height: 8px;
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
+  pointer-events: none;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,0.1);
+}
+
+/* Numeric Buttons Grid Layout */
+.numeric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  row-gap: 12px;
+  column-gap: 14px;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.num-key {
+  height: 44px;
+  border-radius: 12px 12px 18px 18px;
+  box-shadow: var(--key-glow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2px 0;
+}
+
+/* Custom curvatures mimicking real Nokia keys */
+#btnKey1 { border-bottom-left-radius: 20px; }
+#btnKey3 { border-bottom-right-radius: 20px; }
+#btnKey7 { border-top-left-radius: 20px; }
+#btnKey9 { border-top-right-radius: 20px; }
+
+.num-key .num {
+  font-size: 1.15rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.num-key .chars {
+  font-size: 0.55rem;
+  text-transform: uppercase;
+  color: rgba(0, 0, 0, 0.5);
+  font-weight: 800;
+  margin-top: 1px;
+}
+
+/* Highlight control arrow characters on keys */
+.arrow-indicator .chars {
+  color: var(--accent-color);
+  font-weight: bold;
+}
+
+.ok-key .chars {
+  color: #16a34a;
+  font-weight: bold;
+}
+
+/* Darker numeric key characters on yellow/teal keys */
+.nokia-3310.yellow .num-key .chars,
+.nokia-3310.yellow .arrow-indicator .chars,
+.nokia-3310.yellow .ok-key .chars {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* --------------------------------------------------------------------------
+   App Footer
+   -------------------------------------------------------------------------- */
+.app-footer {
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 1.5rem;
+  margin-top: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Mobile-Friendly Responsive Optimization (width <= 820px or height <= 600px)
+   Hides sidebars/manuals/chrome to focus solely on the interactive Nokia chassis
+   -------------------------------------------------------------------------- */
+@media (max-width: 820px), (max-height: 600px) {
+  body {
+    padding: 0 !important;
+    margin: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    overflow: hidden !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    background: radial-gradient(circle at 50% 30%, #1e2530 0%, #0d1017 100%) !important;
+  }
+  
+  .app-container {
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .app-header,
+  .app-footer,
+  .customizer-panel,
+  .manual-panel {
+    display: none !important;
+  }
+  
+  .main-layout {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    height: 100% !important;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .phone-viewport {
+    width: 100% !important;
+    height: 100% !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    overflow: hidden !important;
+  }
+  
+  .nokia-3310 {
+    transform-origin: center center !important;
+    margin: auto !important;
+  }
+}
+

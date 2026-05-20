@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Nokia 3310 Arcade Suite - 90s Nostalgia</title>
+  <meta name="description" content="An authentic, ultra-polished Nokia 3310 multi-game retro arcade with nostalgic sound effects, customizable physical shells, and authentic monochrome LCD aesthetics.">
+  
+  <!-- SEO & Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=VT323&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Ambient Audio Indicator / Quick Sound Warning -->
+  <div class="sound-toast" id="soundToast">
+    <span>🔊 Click anywhere to activate 90s monophonic sound effects!</span>
+  </div>
+
+  <main class="app-container">
+    <!-- Header Dashboard -->
+    <header class="app-header">
+      <div class="logo-area">
+        <span class="retro-badge">NOSTALGIA v1.0</span>
+        <h1>Nokia 3310 Snake</h1>
+      </div>
+      <div class="tagline">The legendary 90s game, rebuilt with premium aesthetics and authentic synth beeps.</div>
+    </header>
+
+    <div class="main-layout">
+      <!-- Controls & Customizer Panel (Left Side) -->
+      <section class="side-panel customizer-panel">
+        <div class="panel-section">
+          <h2><span class="icon">🎨</span> Customize Shell</h2>
+          <p class="section-desc">Change the physical casing of your classic 3310 phone.</p>
+          <div class="skin-selector">
+            <button class="skin-btn active" data-skin="navy" title="Classic Navy Blue">
+              <span class="color-preview navy"></span> Navy
+            </button>
+            <button class="skin-btn" data-skin="grey" title="Retro Grey">
+              <span class="color-preview grey"></span> Grey
+            </button>
+            <button class="skin-btn" data-skin="crimson" title="Crimson Red">
+              <span class="color-preview crimson"></span> Crimson
+            </button>
+            <button class="skin-btn" data-skin="yellow" title="Neon Yellow">
+              <span class="color-preview yellow"></span> Yellow
+            </button>
+            <button class="skin-btn" data-skin="teal" title="Cyber Teal">
+              <span class="color-preview teal"></span> Teal
+            </button>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <h2><span class="icon">💡</span> LCD Backlight</h2>
+          <p class="section-desc">Select your preferred screen retro backlight tone.</p>
+          <div class="backlight-selector">
+            <button class="backlight-btn active" data-backlight="classic" title="Classic Greenish Yellow">Classic</button>
+            <button class="backlight-btn" data-backlight="amber" title="Matrix Amber">Amber</button>
+            <button class="backlight-btn" data-backlight="blue" title="Ice Blue">Ice Blue</button>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <h2><span class="icon">🔊</span> Audio & Sound</h2>
+          <p class="section-desc">Monophonic square-wave speaker controls.</p>
+          <div class="volume-control">
+            <button class="icon-btn" id="muteBtn" title="Toggle Mute">🔊</button>
+            <input type="range" id="volumeSlider" min="0" max="100" value="40" class="slider">
+            <span id="volumeVal">40%</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Nokia 3310 Phone Simulation (Center) -->
+      <section class="phone-viewport">
+        <!-- Interactive 3310 Body Wrapper -->
+        <div class="nokia-3310 navy" id="nokiaPhone">
+          
+          <!-- Top Ear Speaker & Power Key -->
+          <div class="phone-top">
+            <button class="power-button" id="powerBtn" title="Press & hold to toggle phone power"></button>
+            <div class="speaker-grill">
+              <span class="grill-hole"></span>
+              <span class="grill-hole"></span>
+              <span class="grill-hole"></span>
+              <span class="grill-hole"></span>
+              <span class="grill-hole"></span>
+            </div>
+          </div>
+
+          <!-- Silver Screen Plate and LCD Screen Wrapper -->
+          <div class="screen-plate">
+            <div class="nokia-brand">NOKIA</div>
+            
+            <!-- LCD Screen Outer Edge & Glass Bezel -->
+            <div class="screen-glass">
+              <!-- Grid Scanline Overlay for retro CRT/LCD texture -->
+              <div class="lcd-grid-overlay"></div>
+              
+              <!-- Actual LCD Screen -->
+              <div class="lcd-screen classic" id="lcdScreen">
+                
+                <!-- LCD Status bar / Info -->
+                <div class="lcd-header" id="lcdHeader">
+                  <span class="signal-indicator" id="signalBar">▰▰▰▰▰</span>
+                  <span class="header-title" id="headerTitle">SNAKE II</span>
+                  <span class="battery-indicator" id="batteryBar">▰▰▰▰▰</span>
+                </div>
+
+                <!-- Canvas Game Port -->
+                <div class="lcd-content" id="lcdContent">
+                  <canvas id="gameCanvas" width="168" height="96"></canvas>
+                </div>
+                
+                <!-- Bottom Softkeys Helper -->
+                <div class="lcd-footer" id="lcdFooter">
+                  <span class="footer-left" id="footerLeft">Menu</span>
+                  <span class="footer-right" id="footerRight">Exit</span>
+                </div>
+                
+              </div>
+            </div>
+            
+            <!-- Keypad Top Bevel Arc -->
+            <div class="plate-bottom-arc"></div>
+          </div>
+
+          <!-- Tactile Nokia Keypad -->
+          <div class="keypad">
+            <!-- Functional Navigation Row -->
+            <div class="key-row nav-row">
+              <!-- Options Key (Left Soft Key) -->
+              <button class="key soft-key left-soft" id="btnSoftLeft" data-key="softleft">
+                <span class="bar-icon">▬</span>
+              </button>
+              
+              <!-- Core Scroll Key (Nokia 3310 Silver Pad) -->
+              <div class="scroll-key-wrapper">
+                <button class="key scroll-key-btn scroll-up" id="btnScrollUp" data-key="up" title="Scroll Up / Change Direction">
+                  <span class="scroll-arrow">▲</span>
+                </button>
+                <button class="key scroll-key-btn scroll-down" id="btnScrollDown" data-key="down" title="Scroll Down / Change Direction">
+                  <span class="scroll-arrow">▼</span>
+                </button>
+                <div class="scroll-key-center"></div>
+              </div>
+              
+              <!-- Clear / Exit Key (Right Soft Key) -->
+              <button class="key soft-key right-soft" id="btnSoftRight" data-key="softright">
+                <span class="c-label">C</span>
+              </button>
+            </div>
+
+            <!-- Numeric Buttons Grid -->
+            <div class="numeric-grid">
+              <!-- Key 1 -->
+              <button class="key num-key" id="btnKey1" data-key="1">
+                <span class="num">1</span>
+                <span class="chars">. @</span>
+              </button>
+              <!-- Key 2 (UP) -->
+              <button class="key num-key arrow-indicator" id="btnKey2" data-key="2" title="Up Movement">
+                <span class="num">2</span>
+                <span class="chars">abc ▲</span>
+              </button>
+              <!-- Key 3 -->
+              <button class="key num-key" id="btnKey3" data-key="3">
+                <span class="num">3</span>
+                <span class="chars">def</span>
+              </button>
+              
+              <!-- Key 4 (LEFT) -->
+              <button class="key num-key arrow-indicator" id="btnKey4" data-key="4" title="Left Movement">
+                <span class="num">4</span>
+                <span class="chars">ghi ◀</span>
+              </button>
+              <!-- Key 5 (OK / PAUSE) -->
+              <button class="key num-key ok-key" id="btnKey5" data-key="5" title="Menu Select / Pause">
+                <span class="num">5</span>
+                <span class="chars">jkl •</span>
+              </button>
+              <!-- Key 6 (RIGHT) -->
+              <button class="key num-key arrow-indicator" id="btnKey6" data-key="6" title="Right Movement">
+                <span class="num">6</span>
+                <span class="chars">mno ▶</span>
+              </button>
+              
+              <!-- Key 7 -->
+              <button class="key num-key" id="btnKey7" data-key="7">
+                <span class="num">7</span>
+                <span class="chars">pqrs</span>
+              </button>
+              <!-- Key 8 (DOWN) -->
+              <button class="key num-key arrow-indicator" id="btnKey8" data-key="8" title="Down Movement">
+                <span class="num">8</span>
+                <span class="chars">tuv ▼</span>
+              </button>
+              <!-- Key 9 -->
+              <button class="key num-key" id="btnKey9" data-key="9">
+                <span class="num">9</span>
+                <span class="chars">wxyz</span>
+              </button>
+              
+              <!-- Key * -->
+              <button class="key num-key" id="btnKeyStar" data-key="*">
+                <span class="num">*</span>
+                <span class="chars">+ _</span>
+              </button>
+              <!-- Key 0 -->
+              <button class="key num-key" id="btnKey0" data-key="0">
+                <span class="num">0</span>
+                <span class="chars">_ ␣</span>
+              </button>
+              <!-- Key # -->
+              <button class="key num-key" id="btnKeyHash" data-key="#">
+                <span class="num">#</span>
+                <span class="chars">⇧</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Instruction / Manual Dashboard (Right Side) -->
+      <section class="side-panel manual-panel">
+        <div class="panel-section">
+          <h2><span class="icon">📖</span> User Manual</h2>
+          <div class="help-grid">
+            <div class="help-item">
+              <span class="control-key">▲ / W / 2</span>
+              <span class="control-desc">Move Snake Up</span>
+            </div>
+            <div class="help-item">
+              <span class="control-key">▼ / S / 8</span>
+              <span class="control-desc">Move Snake Down</span>
+            </div>
+            <div class="help-item">
+              <span class="control-key">◀ / A / 4</span>
+              <span class="control-desc">Move Snake Left</span>
+            </div>
+            <div class="help-item">
+              <span class="control-key">▶ / D / 6</span>
+              <span class="control-desc">Move Snake Right</span>
+            </div>
+            <div class="help-item">
+              <span class="control-key">Space / Enter / 5</span>
+              <span class="control-desc">Select / Pause Game</span>
+            </div>
+            <div class="help-item">
+              <span class="control-key">Esc / Backspace / C</span>
+              <span class="control-desc">Back / Exit Menu</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel-section">
+          <h2><span class="icon">ℹ️</span> Retro Console Arcade</h2>
+          <ul class="bullet-list">
+            <li><strong>Snake II</strong>: Classic pixel food hunt (arrows to crawl, avoid walls).</li>
+            <li><strong>Tetris</strong>: Retro block puzzle (UP rotates, LEFT/RIGHT moves, DOWN drops, SELECT/5 hard drops).</li>
+            <li><strong>Space Impact</strong>: Side-scroller pixel shoot-em-up (UP/DOWN to fly, RIGHT or SELECT/5 shoots lasers).</li>
+            <li><strong>Pairs II</strong>: Card match memory (arrows to hover cursor, SELECT/5 to flip).</li>
+            <li><strong>Bantumi</strong>: Mancala board (LEFT/RIGHT highlights pits, SELECT/5 sows beans).</li>
+          </ul>
+        </div>
+
+        <div class="panel-section stats-panel">
+          <h2><span class="icon">🏆</span> Personal Records</h2>
+          <div class="scoreboard">
+            <div class="score-row">
+              <span>Snake II (C1/C2/M):</span>
+              <strong><span id="highScoreC1">0</span>/<span id="highScoreC2">0</span>/<span id="highScoreMazes">0</span></strong>
+            </div>
+            <div class="score-row">
+              <span>Tetris High Score:</span>
+              <strong id="highScoreTetris">0</strong>
+            </div>
+            <div class="score-row">
+              <span>Space Impact Score:</span>
+              <strong id="highScoreSpace">0</strong>
+            </div>
+            <div class="score-row">
+              <span>Pairs II High Score:</span>
+              <strong id="highScorePairs">0</strong>
+            </div>
+            <div class="score-row">
+              <span>Bantumi High Score:</span>
+              <strong id="highScoreBantumi">0</strong>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="app-footer">
+      <p>Built with 🎛️ Vanilla Web Audio, CSS Beveling & HTML5 Canvas. A tribute to the immortal Nokia 3310.</p>
+    </footer>
+  </main>
+
+  <script src="snake.js"></script>
+  <script src="tetris.js"></script>
+  <script src="spaceimpact.js"></script>
+  <script src="pairs.js"></script>
+  <script src="bantumi.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
