@@ -1,0 +1,24 @@
+{
+  "name": "Nokia 3310 Arcade Suite",
+  "short_name": "Nokia Retro",
+  "description": "An authentic, ultra-polished Nokia 3310 multi-game retro arcade with nostalgic sound effects, customizable physical shells, and authentic monochrome LCD aesthetics.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0d1017",
+  "theme_color": "#1a2a3a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

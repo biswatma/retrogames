@@ -12,6 +12,14 @@
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=VT323&display=swap" rel="stylesheet">
   
   <link rel="stylesheet" href="style.css">
+  
+  <!-- PWA & Mobile Web App Meta -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#1a2a3a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nokia Retro">
+  <link rel="apple-touch-icon" href="icon-512.png">
 </head>
 <body>
   <!-- Ambient Audio Indicator / Quick Sound Warning -->
@@ -307,5 +315,40 @@
   <script src="pairs.js"></script>
   <script src="bantumi.js"></script>
   <script src="game.js"></script>
+
+  <!-- PWA Install Prompt Modal -->
+  <div class="install-prompt-modal" id="installPrompt">
+    <div class="modal-content">
+      <div class="modal-header">
+        <img src="icon-192.png" alt="Nokia App Icon" class="modal-icon">
+        <div class="header-text">
+          <h3>Nokia 3310 Arcade</h3>
+          <p>Install app on your device for offline play!</p>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="modal-btn cancel-btn" id="installCancelBtn">Not Now</button>
+        <button class="modal-btn install-btn" id="installConfirmBtn">Install</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS PWA Install Instruction Tooltip -->
+  <div class="ios-prompt-modal" id="iosInstallPrompt">
+    <div class="modal-content">
+      <div class="modal-header">
+        <img src="icon-192.png" alt="Nokia App Icon" class="modal-icon">
+        <div class="header-text">
+          <h3>Install on iPhone/iPad</h3>
+          <p>Add this retro arcade to your home screen!</p>
+        </div>
+      </div>
+      <div class="ios-instructions">
+        <p>1. Tap the **Share** button <span class="share-icon">📤</span> at the bottom of Safari.</p>
+        <p>2. Scroll down and select **Add to Home Screen** <span class="plus-icon">➕</span>.</p>
+      </div>
+      <button class="modal-btn ios-close-btn" id="iosInstallCloseBtn">Got It</button>
+    </div>
+  </div>
 </body>
 </html>

@@ -1242,11 +1242,92 @@ class GameEngine {
 }
 
 // --------------------------------------------------------------------------
+// PWA Installation & Service Worker Registration Setup
+// --------------------------------------------------------------------------
+function setupPWA() {
+  // 1. Register Service Worker for offline playability
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js')
+        .then(reg => console.log('Service Worker registered successfully!', reg.scope))
+        .catch(err => console.warn('Service Worker registration failed:', err));
+    });
+  }
+
+  // 2. Manage Installation Prompt Dialogs
+  let deferredPrompt = null;
+  const installModal = document.getElementById('installPrompt');
+  const iosModal = document.getElementById('iosInstallPrompt');
+  
+  const confirmBtn = document.getElementById('installConfirmBtn');
+  const cancelBtn = document.getElementById('installCancelBtn');
+  const closeIosBtn = document.getElementById('iosInstallCloseBtn');
+
+  // Detect iOS and Standalone status
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+
+  // Listen for the native beforeinstallprompt (Android / Chrome Desktop)
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    if (!sessionStorage.getItem('pwa_prompt_dismissed') && !isStandalone) {
+      setTimeout(() => {
+        if (installModal) installModal.classList.add('show');
+      }, 5000);
+    }
+  });
+
+  // Handle Android/Chrome Install Prompt trigger
+  if (confirmBtn) {
+    confirmBtn.addEventListener('click', () => {
+      if (installModal) installModal.classList.remove('show');
+      if (!deferredPrompt) return;
+      
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('User accepted PWA installation');
+        }
+        deferredPrompt = null;
+      });
+    });
+  }
+
+  if (cancelBtn) {
+    cancelBtn.addEventListener('click', () => {
+      if (installModal) installModal.classList.remove('show');
+      sessionStorage.setItem('pwa_prompt_dismissed', 'true');
+    });
+  }
+
+  // Show custom instructions tooltip if running iOS Safari (native prompt is unsupported on iOS)
+  if (isIOS && !isStandalone) {
+    if (!sessionStorage.getItem('pwa_ios_prompt_dismissed')) {
+      setTimeout(() => {
+        if (iosModal) iosModal.classList.add('show');
+      }, 6000);
+    }
+  }
+
+  if (closeIosBtn) {
+    closeIosBtn.addEventListener('click', () => {
+      if (iosModal) iosModal.classList.remove('show');
+      sessionStorage.setItem('pwa_ios_prompt_dismissed', 'true');
+    });
+  }
+}
+
+// --------------------------------------------------------------------------
 // App Launch Setup
 // --------------------------------------------------------------------------
 window.addEventListener('DOMContentLoaded', () => {
   const Game = new GameEngine();
   Game.init();
+  
+  // Initialize PWA setup
+  setupPWA();
 
   // Bounded frame ticker to redraw game on interval ticks
   setInterval(() => {
